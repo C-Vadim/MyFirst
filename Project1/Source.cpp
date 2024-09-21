@@ -4,17 +4,17 @@
 #include <string>
 #include <fstream>
 
-// Функция для подключения к базе данных
+
 sqlite3* connectToDatabase() {
     sqlite3* DB;
     if (sqlite3_open("example.db", &DB)) {
-        std::cerr << "Ошибка при подключении к базе данных." << std::endl;
+        std::cerr << "ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­ГЁГЁ ГЄ ГЎГ Г§ГҐ Г¤Г Г­Г­Г»Гµ." << std::endl;
         return nullptr;
     }
     return DB;
 }
 
-// Функция для получения пользователей из базы данных
+
 std::vector<std::string> getUsers(sqlite3* DB) {
     std::vector<std::string> users;
     sqlite3_stmt* stmt;
@@ -29,9 +29,9 @@ std::vector<std::string> getUsers(sqlite3* DB) {
     return users;
 }
 
-// Функция для получения лицензии пользователя
+
 std::vector<bool> getUserLicense(sqlite3* DB, const std::string& username) {
-    std::vector<bool> permissions(6, false); // 6 прав
+    std::vector<bool> permissions(6, false); 
     sqlite3_stmt* stmt;
     const char* query = "SELECT create_user, delete_user, edit_file, read_file, create_file, delete_file "
         "FROM licenses WHERE user_id = (SELECT id FROM users WHERE name = ?);";
@@ -40,7 +40,7 @@ std::vector<bool> getUserLicense(sqlite3* DB, const std::string& username) {
         sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             for (int i = 0; i < 6; ++i) {
-                permissions[i] = sqlite3_column_int(stmt, i) != 0; // Считываем права
+                permissions[i] = sqlite3_column_int(stmt, i) != 0; 
             }
         }
     }
@@ -48,102 +48,102 @@ std::vector<bool> getUserLicense(sqlite3* DB, const std::string& username) {
     return permissions;
 }
 
-// Функция для выполнения действий с файлами
+
 void performFileActions(const std::string& username, const std::vector<bool>& permissions) {
     int choice;
     std::string filename;
 
     while (true) {
-        std::cout << "\nВыберите действие:\n";
-        if (permissions[4]) std::cout << "1. Создать новый файл\n"; // create_file
-        if (permissions[5]) std::cout << "2. Удалить файл\n"; // delete_file
-        if (permissions[2]) std::cout << "3. Редактировать файл\n"; // edit_file
-        if (permissions[3]) std::cout << "4. Читать файл\n"; // read_file
-        std::cout << "5. Выход\n";
-        std::cout << "Ваш выбор: ";
+        std::cout << "\nГ‚Г»ГЎГҐГ°ГЁГІГҐ Г¤ГҐГ©Г±ГІГўГЁГҐ:\n";
+        if (permissions[4]) std::cout << "1. Г‘Г®Г§Г¤Г ГІГј Г­Г®ГўГ»Г© ГґГ Г©Г«\n"; 
+        if (permissions[5]) std::cout << "2. Г“Г¤Г Г«ГЁГІГј ГґГ Г©Г«\n";
+        if (permissions[2]) std::cout << "3. ГђГҐГ¤Г ГЄГІГЁГ°Г®ГўГ ГІГј ГґГ Г©Г«\n"; 
+        if (permissions[3]) std::cout << "4. Г—ГЁГІГ ГІГј ГґГ Г©Г«\n";
+        std::cout << "5. Г‚Г»ГµГ®Г¤\n";
+        std::cout << "Г‚Г Гё ГўГ»ГЎГ®Г°: ";
         std::cin >> choice;
 
         switch (choice) {
         case 1:
             if (!permissions[4]) {
-                std::cout << "У вас нет прав для создания файла." << std::endl;
+                std::cout << "Г“ ГўГ Г± Г­ГҐГІ ГЇГ°Г Гў Г¤Г«Гї Г±Г®Г§Г¤Г Г­ГЁГї ГґГ Г©Г«Г ." << std::endl;
                 continue;
             }
-            std::cout << "Введите название нового файла (с расширением .bin): ";
+            std::cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ Г­Г®ГўГ®ГЈГ® ГґГ Г©Г«Г  (Г± Г°Г Г±ГёГЁГ°ГҐГ­ГЁГҐГ¬ .bin): ";
             std::cin >> filename;
             {
                 std::ofstream ofs(filename, std::ios::binary);
                 if (ofs) {
-                    std::cout << "Файл " << filename << " создан." << std::endl;
+                    std::cout << "Г”Г Г©Г« " << filename << " Г±Г®Г§Г¤Г Г­." << std::endl;
                 }
                 else {
-                    std::cerr << "Ошибка при создании файла." << std::endl;
+                    std::cerr << "ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г±Г®Г§Г¤Г Г­ГЁГЁ ГґГ Г©Г«Г ." << std::endl;
                 }
             }
             break;
 
         case 2:
             if (!permissions[5]) {
-                std::cout << "У вас нет прав для удаления файла." << std::endl;
+                std::cout << "Г“ ГўГ Г± Г­ГҐГІ ГЇГ°Г Гў Г¤Г«Гї ГіГ¤Г Г«ГҐГ­ГЁГї ГґГ Г©Г«Г ." << std::endl;
                 continue;
             }
-            std::cout << "Введите название файла для удаления (с расширением .bin): ";
+            std::cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ ГґГ Г©Г«Г  Г¤Г«Гї ГіГ¤Г Г«ГҐГ­ГЁГї (Г± Г°Г Г±ГёГЁГ°ГҐГ­ГЁГҐГ¬ .bin): ";
             std::cin >> filename;
             if (remove(filename.c_str()) == 0) {
-                std::cout << "Файл " << filename << " удален." << std::endl;
+                std::cout << "Г”Г Г©Г« " << filename << " ГіГ¤Г Г«ГҐГ­." << std::endl;
             }
             else {
-                std::cerr << "Ошибка при удалении файла." << std::endl;
+                std::cerr << "ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ ГіГ¤Г Г«ГҐГ­ГЁГЁ ГґГ Г©Г«Г ." << std::endl;
             }
             break;
 
         case 3:
             if (!permissions[2]) {
-                std::cout << "У вас нет прав для редактирования файла." << std::endl;
+                std::cout << "Г“ ГўГ Г± Г­ГҐГІ ГЇГ°Г Гў Г¤Г«Гї Г°ГҐГ¤Г ГЄГІГЁГ°Г®ГўГ Г­ГЁГї ГґГ Г©Г«Г ." << std::endl;
                 continue;
             }
-            std::cout << "Введите название файла для редактирования (с расширением .bin): ";
+            std::cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ ГґГ Г©Г«Г  Г¤Г«Гї Г°ГҐГ¤Г ГЄГІГЁГ°Г®ГўГ Г­ГЁГї (Г± Г°Г Г±ГёГЁГ°ГҐГ­ГЁГҐГ¬ .bin): ";
             std::cin >> filename;
             {
                 std::ofstream ofs(filename, std::ios::binary | std::ios::app);
                 if (ofs) {
                     std::string content;
-                    std::cin.ignore(); // Игнорируем оставшийся символ новой строки
-                    std::cout << "Введите текст для добавления в файл: ";
-                    std::getline(std::cin, content); // Читаем строку с пробелами
+                    std::cin.ignore();
+                    std::cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГІГҐГЄГ±ГІ Г¤Г«Гї Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГї Гў ГґГ Г©Г«: ";
+                    std::getline(std::cin, content);
                     ofs.write(content.c_str(), content.size());
-                    std::cout << "Файл " << filename << " обновлен." << std::endl;
+                    std::cout << "Г”Г Г©Г« " << filename << " Г®ГЎГ­Г®ГўГ«ГҐГ­." << std::endl;
                 }
                 else {
-                    std::cerr << "Ошибка при открытии файла." << std::endl;
+                    std::cerr << "ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г®ГІГЄГ°Г»ГІГЁГЁ ГґГ Г©Г«Г ." << std::endl;
                 }
             }
             break;
 
         case 4:
             if (!permissions[3]) {
-                std::cout << "У вас нет прав для чтения файла." << std::endl;
+                std::cout << "Г“ ГўГ Г± Г­ГҐГІ ГЇГ°Г Гў Г¤Г«Гї Г·ГІГҐГ­ГЁГї ГґГ Г©Г«Г ." << std::endl;
                 continue;
             }
-            std::cout << "Введите название файла для чтения (с расширением .bin): ";
+            std::cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г Г§ГўГ Г­ГЁГҐ ГґГ Г©Г«Г  Г¤Г«Гї Г·ГІГҐГ­ГЁГї (Г± Г°Г Г±ГёГЁГ°ГҐГ­ГЁГҐГ¬ .bin): ";
             std::cin >> filename;
             {
                 std::ifstream ifs(filename, std::ios::binary);
                 if (ifs) {
                     std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-                    std::cout << "Содержимое файла " << filename << ":\n" << content << std::endl;
+                    std::cout << "Г‘Г®Г¤ГҐГ°Г¦ГЁГ¬Г®ГҐ ГґГ Г©Г«Г  " << filename << ":\n" << content << std::endl;
                 }
                 else {
-                    std::cerr << "Ошибка при чтении файла." << std::endl;
+                    std::cerr << "ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г·ГІГҐГ­ГЁГЁ ГґГ Г©Г«Г ." << std::endl;
                 }
             }
             break;
 
         case 5:
-            return; // Выход из функции
+            return;
 
         default:
-            std::cout << "Неверный выбор. Попробуйте еще раз." << std::endl;
+            std::cout << "ГЌГҐГўГҐГ°Г­Г»Г© ГўГ»ГЎГ®Г°. ГЏГ®ГЇГ°Г®ГЎГіГ©ГІГҐ ГҐГ№ГҐ Г°Г Г§." << std::endl;
             break;
         }
     }
@@ -153,43 +153,42 @@ int main() {
     setlocale(LC_ALL, "Ru");
     sqlite3* DB = connectToDatabase();
     if (!DB) {
-        return 1; // Ошибка подключения к базе данных
+        return 1; 
     }
 
-    // Получение пользователей из базы данных
+    
     std::vector<std::string> users = getUsers(DB);
     if (users.empty()) {
-        std::cout << "Нет доступных пользователей." << std::endl;
+        std::cout << "ГЌГҐГІ Г¤Г®Г±ГІГіГЇГ­Г»Гµ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ©." << std::endl;
         sqlite3_close(DB);
         return 1;
     }
 
-    // Вывод списка пользователей
-    std::cout << "Доступные пользователи:\n";
+    std::cout << "Г„Г®Г±ГІГіГЇГ­Г»ГҐ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГЁ:\n";
     for (size_t i = 0; i < users.size(); ++i) {
         std::cout << i + 1 << ". " << users[i] << std::endl;
     }
 
-    // Выбор пользователя
+  
     int userChoice;
-    std::cout << "Введите номер пользователя для входа: ";
+    std::cout << "Г‚ГўГҐГ¤ГЁГІГҐ Г­Г®Г¬ГҐГ° ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї Г¤Г«Гї ГўГµГ®Г¤Г : ";
     std::cin >> userChoice;
 
     if (userChoice < 1 || userChoice > users.size()) {
-        std::cerr << "Неверный выбор пользователя." << std::endl;
+        std::cerr << "ГЌГҐГўГҐГ°Г­Г»Г© ГўГ»ГЎГ®Г° ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї." << std::endl;
         sqlite3_close(DB);
         return 1;
     }
 
     std::string selectedUser = users[userChoice - 1];
-    std::cout << "Вы вошли как " << selectedUser << std::endl;
+    std::cout << "Г‚Г» ГўГ®ГёГ«ГЁ ГЄГ ГЄ " << selectedUser << std::endl;
 
-    // Получение лицензии пользователя
+
     std::vector<bool> permissions = getUserLicense(DB, selectedUser);
 
-    // Выполнение действий с файлами с учетом лицензий
+    
     performFileActions(selectedUser, permissions);
 
-    sqlite3_close(DB); // Закрытие базы данных
+    sqlite3_close(DB); 
     return 0;
 }
